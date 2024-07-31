@@ -9,8 +9,8 @@ typedef struct {
     long long avail_bal;
     long long ledger_bal;
     int ledger_bal_present;
-    char upd_date[11]; // "YYYY-MM-DD\0"
-    char upd_time[9];  // "HH:MM:SS\0"
+    char upd_date[11];
+    char upd_time[9];
 } AccountRecord;
 
 void parse_tlv(char *line, AccountRecord *record) {
@@ -36,12 +36,12 @@ void parse_tlv(char *line, AccountRecord *record) {
             strncpy(record->account_no, value, sizeof(record->account_no) - 1);
             record->account_no[sizeof(record->account_no) - 1] = '\0';
         } else if (strcmp(tag, "AB") == 0) {
-            record->avail_bal = atoll(value + 1); // Skip the 'C' or 'D' sign character
+            record->avail_bal = atoll(value + 1);
             if (value[0] == 'D') {
                 record->avail_bal = -record->avail_bal;
             }
         } else if (strcmp(tag, "LB") == 0) {
-            record->ledger_bal = atoll(value + 1); // Skip the 'C' or 'D' sign character
+            record->ledger_bal = atoll(value + 1);
             if (value[0] == 'D') {
                 record->ledger_bal = -record->ledger_bal;
             }
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
     int count = 0;
 
     while (fgets(line, sizeof(line), stdin)) {
-        if (line[0] == '\n') continue;  // Skip empty lines
+        if (line[0] == '\n') continue;
         memset(&record, 0, sizeof(record));
         parse_tlv(line, &record);
         print_sql_insert(&record);
